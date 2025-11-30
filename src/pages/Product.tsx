@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
+import { ArrowDown } from "lucide-react";
 import TextureProjection from "@/components/TextureProjection";
+import { useNavigate } from "react-router-dom";
 
 const Product = () => {
+  const navigate = useNavigate();
   return (
     <div className="relative w-full h-full">
       <TextureProjection />
@@ -13,33 +16,22 @@ const Product = () => {
         transition={{ duration: 0.8, delay: 0.3 }}
         className="absolute top-1/2 left-12 -translate-y-1/2 max-w-md z-10"
       >
-        <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4 text-glow">
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4 text-glow">
           Our Products
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground mb-6">
           Experience cutting-edge technology with stunning visual design. 
           Our products blend innovation with artistic excellence.
         </p>
+        <button
+          onClick={() => navigate("/about")}
+          className="group flex items-left gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-glow transition-all hover-lift"
+        >
+          About Us
+          <ArrowDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
+        </button>
         
-        <div className="space-y-4">
-          <div className="p-4 bg-card border border-border rounded-lg hover:shadow-glow transition-all hover-lift">
-            <h3 className="text-xl font-semibold text-primary mb-2">
-              3D Visualization
-            </h3>
-            <p className="text-muted-foreground">
-              Advanced rendering techniques for immersive experiences
-            </p>
-          </div>
-          
-          <div className="p-4 bg-card border border-border rounded-lg hover:shadow-glow transition-all hover-lift">
-            <h3 className="text-xl font-semibold text-primary mb-2">
-              Interactive Design
-            </h3>
-            <p className="text-muted-foreground">
-              Real-time interaction with complex 3D models
-            </p>
-          </div>
-        </div>
+        
       </motion.div>
 
       {/* Gradient Overlay */}

@@ -16,15 +16,22 @@ const ReflectiveSphere = () => {
   return (
     <mesh ref={sphereRef} position={[0, 0, 0]}>
       <sphereGeometry args={[1.5, 64, 64]} />
-      <meshStandardMaterial
+
+      <meshPhysicalMaterial
         metalness={1}
-        roughness={0.1}
-        envMapIntensity={1.5}
-        color="#4fd1c5"
+        roughness={0.08}
+        clearcoat={1}
+        clearcoatRoughness={0.05}
+        reflectivity={1}
+        envMapIntensity={2.2}
+        color="#e76a25"
+        emissive="#2b1205"
+        emissiveIntensity={0.12}
       />
     </mesh>
   );
 };
+
 
 const FloatingTorus = ({ position }: { position: [number, number, number] }) => {
   const torusRef = useRef<THREE.Mesh>(null);
@@ -33,22 +40,30 @@ const FloatingTorus = ({ position }: { position: [number, number, number] }) => 
     if (torusRef.current) {
       torusRef.current.rotation.x += 0.01;
       torusRef.current.rotation.y += 0.005;
-      torusRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime + position[0]) * 0.3;
+      torusRef.current.position.y =
+        position[1] + Math.sin(state.clock.elapsedTime + position[0]) * 0.3;
     }
   });
 
   return (
     <mesh ref={torusRef} position={position}>
       <torusGeometry args={[0.6, 0.2, 16, 32]} />
-      <meshStandardMaterial
-        metalness={0.9}
-        roughness={0.2}
-        envMapIntensity={1.2}
-        color="#38bdf8"
+
+      <meshPhysicalMaterial
+        metalness={1}
+        roughness={0.12}
+        clearcoat={1}
+        clearcoatRoughness={0.08}
+        reflectivity={1}
+        envMapIntensity={1.8}
+        color="#877f7d"
+        emissive="#1a1919"
+        emissiveIntensity={0.06}
       />
     </mesh>
   );
 };
+
 
 const Scene = () => {
   return (
@@ -97,7 +112,7 @@ const CubemapScene = () => {
   return (
     <div className="w-full h-full">
       <Canvas
-        camera={{ position: [0, 0, 8], fov: 50 }}
+        camera={{ position: [0, 0, 8], fov: 70 }}
         gl={{ antialias: true, alpha: true }}
       >
         <color attach="background" args={["#e5ddd5"]} />

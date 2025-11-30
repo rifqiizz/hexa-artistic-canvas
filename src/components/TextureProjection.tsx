@@ -1,48 +1,59 @@
-import { useRef, useMemo, useState } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, useTexture, Html } from "@react-three/drei";
+"use client";
+
+import React, { useRef, useMemo, useState } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls, Environment } from "@react-three/drei";
 import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
 
-const ProjectedMesh = ({ 
-  onHover, 
-  position = [0, 0, 0], 
-  geometry = "torusKnot",
-  color,
-  panelType 
-}: { 
+/**
+ * TextureProjection.tsx
+ * - client component (use client)
+ * - uses drei <Environment /> for HDR env map
+ * - meshPhysicalMaterial for realistic metal
+ * - preserves your hover HUD and geometry
+ */
+
+// ------------------------- ProjectedMesh -------------------------
+type ProjectedMeshProps = {
   onHover: (isHovered: boolean, data?: any) => void;
   position?: [number, number, number];
   geometry?: "torusKnot" | "sphere" | "box" | "torus";
   color: string;
   panelType: string;
+};
+
+const ProjectedMesh: React.FC<ProjectedMeshProps> = ({
+  onHover,
+  position = [0, 0, 0],
+  geometry = "torusKnot",
+  color,
+  panelType,
 }) => {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const meshRef = useRef<THREE.Mesh | null>(null);
   const [hovered, setHovered] = useState(false);
 
-  // Create a gradient texture
+  // gradient canvas texture (kept from original)
   const texture = useMemo(() => {
     const canvas = document.createElement("canvas");
     canvas.width = 512;
     canvas.height = 512;
     const ctx = canvas.getContext("2d")!;
-    
     const gradient = ctx.createLinearGradient(0, 0, 512, 512);
     gradient.addColorStop(0, color);
     gradient.addColorStop(0.5, "#38bdf8");
     gradient.addColorStop(1, "#818cf8");
-    
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 512, 512);
-    
-    const texture = new THREE.CanvasTexture(canvas);
-    texture.needsUpdate = true;
-    return texture;
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.needsUpdate = true;
+    return tex;
   }, [color]);
 
   useFrame((state) => {
     if (meshRef.current) {
-      meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3 + position[0]) * 0.2;
+      meshRef.current.rotation.x =
+        Math.sin(state.clock.elapsedTime * 0.3 + position[0]) * 0.2;
       meshRef.current.rotation.y += 0.005;
     }
   });
@@ -76,59 +87,67 @@ const ProjectedMesh = ({
   };
 
   return (
-    <mesh 
+    <mesh
       ref={meshRef}
       position={position}
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
+      castShadow
+      receiveShadow
     >
       {renderGeometry()}
-      <meshStandardMaterial
+
+      <meshPhysicalMaterial
         map={texture}
-        metalness={0.6}
-        roughness={0.3}
-        envMapIntensity={1}
-        emissive={hovered ? color : "#000000"}
-        emissiveIntensity={hovered ? 0.3 : 0}
+        metalness={1}
+        roughness={0.08}
+        clearcoat={1}
+        clearcoatRoughness={0.02}
+        reflectivity={1}
+        envMapIntensity={2}
+        toneMapped={true}
+        emissive={hovered ? color : "#111"}
+        emissiveIntensity={hovered ? 0.25 : 0.02}
       />
     </mesh>
   );
 };
 
-const BackgroundSpheres = () => {
-  const groupRef = useRef<THREE.Group>(null);
+// ------------------------- BackgroundSpheres -------------------------
+const BackgroundSpheres: React.FC = () => {
+  const groupRef = useRef<THREE.Group | null>(null);
 
-  useFrame((state) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y += 0.002;
-    }
+  useFrame(() => {
+    if (groupRef.current) groupRef.current.rotation.y += 0.002;
   });
 
   const spheres = useMemo(() => {
-    const temp = [];
+    const arr: { key: number; pos: THREE.Vector3; scale: number }[] = [];
     for (let i = 0; i < 30; i++) {
-      const pos = new THREE.Vector3(
-        (Math.random() - 0.5) * 20,
-        (Math.random() - 0.5) * 20,
-        (Math.random() - 0.5) * 20 - 5
-      );
-      const scale = Math.random() * 0.5 + 0.2;
-      temp.push({ pos, scale, key: i });
+      arr.push({
+        key: i,
+        pos: new THREE.Vector3(
+          (Math.random() - 0.5) * 20,
+          (Math.random() - 0.5) * 20,
+          (Math.random() - 0.5) * 20 - 5
+        ),
+        scale: Math.random() * 0.5 + 0.2,
+      });
     }
-    return temp;
+    return arr;
   }, []);
 
   return (
     <group ref={groupRef}>
-      {spheres.map((sphere) => (
-        <mesh key={sphere.key} position={sphere.pos} scale={sphere.scale}>
+      {spheres.map((s) => (
+        <mesh key={s.key} position={s.pos} scale={s.scale}>
           <sphereGeometry args={[1, 16, 16]} />
           <meshStandardMaterial
-            color="#4fd1c5"
+            color="#e76a25"
             transparent
-            opacity={0.3}
-            emissive="#4fd1c5"
-            emissiveIntensity={0.5}
+            opacity={0.18}
+            emissive="#000"
+            emissiveIntensity={0.4}
           />
         </mesh>
       ))}
@@ -136,48 +155,60 @@ const BackgroundSpheres = () => {
   );
 };
 
-const Scene = ({ onHover }: { onHover: (isHovered: boolean, data?: any) => void }) => {
+// ------------------------- Scene -------------------------
+const Scene: React.FC<{ onHover: (h: boolean, d?: any) => void }> = ({
+  onHover,
+}) => {
   return (
     <>
-      <ambientLight intensity={0.3} />
-      <pointLight position={[10, 10, 10]} intensity={1} />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#4fd1c5" />
+      {/* Environment: make sure /public/hdr/studio_small_09.hdr exists */}
+      <Environment files="/hdr/studio_small_09.hdr" blur={0.12} background={false} />
+
+      <ambientLight intensity={0.12} />
+
+      <directionalLight position={[5, 5, 5]} intensity={1.6} castShadow />
+      <directionalLight position={[-4, -3, 3]} intensity={0.7} />
+
       <spotLight
-        position={[0, 10, 0]}
-        angle={0.3}
-        penumbra={1}
-        intensity={1}
-        color="#38bdf8"
+        position={[0, 8, 0]}
+        angle={0.36}
+        penumbra={0.9}
+        intensity={1.1}
+        color="#bfe8ff"
       />
-      
-      <ProjectedMesh 
-        onHover={onHover} 
-        position={[0, 0, 0]} 
+
+      <ProjectedMesh
+        onHover={onHover}
+        position={[0, 0, 0]}
         geometry="torusKnot"
         color="#4fd1c5"
         panelType="GRC Panel Type A"
       />
-      <ProjectedMesh 
-        onHover={onHover} 
-        position={[-3.5, 1.5, -2]} 
+
+      <ProjectedMesh
+        onHover={onHover}
+        position={[-3.5, 1.5, -2]}
         geometry="sphere"
-        color="#f97316"
+        color="#e76a25"
         panelType="GRC Panel Type B - Premium"
       />
-      <ProjectedMesh 
-        onHover={onHover} 
-        position={[3.5, -1, -1]} 
+
+      <ProjectedMesh
+        onHover={onHover}
+        position={[3.5, -1, -1]}
         geometry="torus"
         color="#8b5cf6"
         panelType="GRC Panel Type C - Elite"
       />
-      <ProjectedMesh 
-        onHover={onHover} 
-        position={[0, -2.5, 1]} 
+
+      <ProjectedMesh
+        onHover={onHover}
+        position={[0, -2.5, 1]}
         geometry="box"
         color="#10b981"
         panelType="GRC Panel Type D - Standard"
       />
+
       <BackgroundSpheres />
 
       <OrbitControls
@@ -186,13 +217,14 @@ const Scene = ({ onHover }: { onHover: (isHovered: boolean, data?: any) => void 
         maxDistance={15}
         minDistance={5}
         autoRotate
-        autoRotateSpeed={0.8}
+        autoRotateSpeed={0.6}
       />
     </>
   );
 };
 
-const TextureProjection = () => {
+// ------------------------- Main Component -------------------------
+const TextureProjection: React.FC = () => {
   const [hoverData, setHoverData] = useState<any>(null);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -204,22 +236,23 @@ const TextureProjection = () => {
   return (
     <div className="w-full h-full relative">
       <Canvas
-        camera={{ position: [0, 0, 8], fov: 50 }}
-        gl={{ antialias: true, alpha: true }}
+        shadows
+        camera={{ position: [0, 0, 8], fov: 80 }}
+        gl={{ antialias: true }}
       >
         <color attach="background" args={["#e5ddd5"]} />
-        <fog attach="fog" args={["#e5ddd5", 8, 20]} />
+        <fog attach="fog" args={["#e5ddd5", 12, 30]} />
         <Scene onHover={handleHover} />
       </Canvas>
 
-      {/* Hover Info HUD */}
+      {/* Hover HUD */}
       <AnimatePresence>
         {isHovered && hoverData && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.28 }}
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
           >
             <div className="bg-foreground/60 backdrop-blur-md border border-border/20 rounded-lg p-6 min-w-[280px] shadow-elegant">

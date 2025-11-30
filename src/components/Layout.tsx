@@ -12,7 +12,7 @@ const Layout = ({ children }: LayoutProps) => {
       {/* Logo */}
       <Link to="/" className="fixed top-8 left-8 z-50 hover-lift">
         <img
-          src="https://hexaintegra.com/wp-content/uploads/2020/12/logo_hexa.png"
+          src="https://grcartikon.co.id/wp-content/uploads/2015/04/grcartikondotcom-logotype1.png"
           alt="Hexa Logo"
           className="h-12 w-auto"
         />

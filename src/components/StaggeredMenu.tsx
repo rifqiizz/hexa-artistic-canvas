@@ -7,6 +7,7 @@ const menuItems = [
   { label: "Home", path: "/" },
   { label: "Product", path: "/product" },
   { label: "About", path: "/about" },
+  { label: "Trial", path: "/trial" },
 ];
 
 const StaggeredMenu = () => {

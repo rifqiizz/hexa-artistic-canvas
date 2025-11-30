@@ -15,18 +15,18 @@ const Home = () => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.5 }}
-        className="absolute bottom-20 left-1/2 -translate-x-1/2 text-center z-10"
+        className="absolute bottom-20 left-16 z-10"
       >
-        <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-4 text-glow">
-          Hexa Integra
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4 text-glow">
+          GRC Artikon
         </h1>
-        <p className="text-xl md:text-2xl text-muted-foreground mb-8">
+        <p className="text-lg md:text-xl text-muted-foreground mb-8">
           Artistic Innovation in 3D Space
         </p>
         
         <button
           onClick={() => navigate("/product")}
-          className="group flex items-center gap-2 mx-auto px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-glow transition-all hover-lift"
+          className="group flex items-left gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:shadow-glow transition-all hover-lift"
         >
           Explore Products
           <ArrowDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
