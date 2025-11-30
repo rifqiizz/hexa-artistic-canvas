@@ -1,11 +1,13 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, useTexture } from "@react-three/drei";
+import { OrbitControls, useTexture, Html } from "@react-three/drei";
 import * as THREE from "three";
+import { motion, AnimatePresence } from "framer-motion";
 
-const ProjectedMesh = () => {
+const ProjectedMesh = ({ onHover }: { onHover: (isHovered: boolean, data?: any) => void }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const { viewport } = useThree();
+  const [hovered, setHovered] = useState(false);
 
   // Create a gradient texture
   const texture = useMemo(() => {
@@ -34,14 +36,35 @@ const ProjectedMesh = () => {
     }
   });
 
+  const handlePointerOver = () => {
+    setHovered(true);
+    onHover(true, {
+      name: "GRC Panel Type A",
+      indexValue: (Math.random() * 10).toFixed(2),
+      thermalStability: Math.floor(Math.random() * 20 + 80),
+      elasticRating: (Math.random() * 3 + 6).toFixed(2),
+    });
+  };
+
+  const handlePointerOut = () => {
+    setHovered(false);
+    onHover(false);
+  };
+
   return (
-    <mesh ref={meshRef}>
+    <mesh 
+      ref={meshRef}
+      onPointerOver={handlePointerOver}
+      onPointerOut={handlePointerOut}
+    >
       <torusKnotGeometry args={[1.5, 0.5, 128, 32]} />
       <meshStandardMaterial
         map={texture}
         metalness={0.6}
         roughness={0.3}
         envMapIntensity={1}
+        emissive={hovered ? "#4fd1c5" : "#000000"}
+        emissiveIntensity={hovered ? 0.3 : 0}
       />
     </mesh>
   );
@@ -88,7 +111,7 @@ const BackgroundSpheres = () => {
   );
 };
 
-const Scene = () => {
+const Scene = ({ onHover }: { onHover: (isHovered: boolean, data?: any) => void }) => {
   return (
     <>
       <ambientLight intensity={0.3} />
@@ -102,7 +125,7 @@ const Scene = () => {
         color="#38bdf8"
       />
       
-      <ProjectedMesh />
+      <ProjectedMesh onHover={onHover} />
       <BackgroundSpheres />
 
       <OrbitControls
@@ -118,16 +141,57 @@ const Scene = () => {
 };
 
 const TextureProjection = () => {
+  const [hoverData, setHoverData] = useState<any>(null);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleHover = (hovered: boolean, data?: any) => {
+    setIsHovered(hovered);
+    setHoverData(data);
+  };
+
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full relative">
       <Canvas
         camera={{ position: [0, 0, 8], fov: 50 }}
         gl={{ antialias: true, alpha: true }}
       >
-        <color attach="background" args={["#0a0a0a"]} />
-        <fog attach="fog" args={["#0a0a0a", 8, 20]} />
-        <Scene />
+        <color attach="background" args={["#e5ddd5"]} />
+        <fog attach="fog" args={["#e5ddd5", 8, 20]} />
+        <Scene onHover={handleHover} />
       </Canvas>
+
+      {/* Hover Info HUD */}
+      <AnimatePresence>
+        {isHovered && hoverData && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            transition={{ duration: 0.3 }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+          >
+            <div className="bg-foreground/60 backdrop-blur-md border border-border/20 rounded-lg p-6 min-w-[280px] shadow-elegant">
+              <h3 className="text-xl font-bold text-background mb-4">
+                {hoverData.name}
+              </h3>
+              <div className="space-y-2 text-background/90">
+                <div className="flex justify-between">
+                  <span className="font-medium">Index Value:</span>
+                  <span className="font-mono">{hoverData.indexValue}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium">Thermal Stability:</span>
+                  <span className="font-mono">{hoverData.thermalStability}%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium">Elastic Rating:</span>
+                  <span className="font-mono">{hoverData.elasticRating}</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

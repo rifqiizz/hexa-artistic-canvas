@@ -100,6 +100,8 @@ const CubemapScene = () => {
         camera={{ position: [0, 0, 8], fov: 50 }}
         gl={{ antialias: true, alpha: true }}
       >
+        <color attach="background" args={["#e5ddd5"]} />
+        <fog attach="fog" args={["#e5ddd5", 10, 25]} />
         <Scene />
       </Canvas>
     </div>
