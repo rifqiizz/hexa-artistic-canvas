@@ -6,6 +6,7 @@ import { Menu, X } from "lucide-react";
 const menuItems = [
   { label: "Home", path: "/" },
   { label: "Product", path: "/product" },
+  { label: "About", path: "/about" },
 ];
 
 const StaggeredMenu = () => {
