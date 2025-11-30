@@ -4,9 +4,20 @@ import { OrbitControls, useTexture, Html } from "@react-three/drei";
 import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
 
-const ProjectedMesh = ({ onHover }: { onHover: (isHovered: boolean, data?: any) => void }) => {
+const ProjectedMesh = ({ 
+  onHover, 
+  position = [0, 0, 0], 
+  geometry = "torusKnot",
+  color,
+  panelType 
+}: { 
+  onHover: (isHovered: boolean, data?: any) => void;
+  position?: [number, number, number];
+  geometry?: "torusKnot" | "sphere" | "box" | "torus";
+  color: string;
+  panelType: string;
+}) => {
   const meshRef = useRef<THREE.Mesh>(null);
-  const { viewport } = useThree();
   const [hovered, setHovered] = useState(false);
 
   // Create a gradient texture
@@ -17,7 +28,7 @@ const ProjectedMesh = ({ onHover }: { onHover: (isHovered: boolean, data?: any) 
     const ctx = canvas.getContext("2d")!;
     
     const gradient = ctx.createLinearGradient(0, 0, 512, 512);
-    gradient.addColorStop(0, "#4fd1c5");
+    gradient.addColorStop(0, color);
     gradient.addColorStop(0.5, "#38bdf8");
     gradient.addColorStop(1, "#818cf8");
     
@@ -27,11 +38,11 @@ const ProjectedMesh = ({ onHover }: { onHover: (isHovered: boolean, data?: any) 
     const texture = new THREE.CanvasTexture(canvas);
     texture.needsUpdate = true;
     return texture;
-  }, []);
+  }, [color]);
 
   useFrame((state) => {
     if (meshRef.current) {
-      meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.2;
+      meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3 + position[0]) * 0.2;
       meshRef.current.rotation.y += 0.005;
     }
   });
@@ -39,7 +50,7 @@ const ProjectedMesh = ({ onHover }: { onHover: (isHovered: boolean, data?: any) 
   const handlePointerOver = () => {
     setHovered(true);
     onHover(true, {
-      name: "GRC Panel Type A",
+      name: panelType,
       indexValue: (Math.random() * 10).toFixed(2),
       thermalStability: Math.floor(Math.random() * 20 + 80),
       elasticRating: (Math.random() * 3 + 6).toFixed(2),
@@ -51,19 +62,33 @@ const ProjectedMesh = ({ onHover }: { onHover: (isHovered: boolean, data?: any) 
     onHover(false);
   };
 
+  const renderGeometry = () => {
+    switch (geometry) {
+      case "sphere":
+        return <sphereGeometry args={[1.2, 32, 32]} />;
+      case "box":
+        return <boxGeometry args={[2, 2, 2]} />;
+      case "torus":
+        return <torusGeometry args={[1.3, 0.4, 16, 100]} />;
+      default:
+        return <torusKnotGeometry args={[1.5, 0.5, 128, 32]} />;
+    }
+  };
+
   return (
     <mesh 
       ref={meshRef}
+      position={position}
       onPointerOver={handlePointerOver}
       onPointerOut={handlePointerOut}
     >
-      <torusKnotGeometry args={[1.5, 0.5, 128, 32]} />
+      {renderGeometry()}
       <meshStandardMaterial
         map={texture}
         metalness={0.6}
         roughness={0.3}
         envMapIntensity={1}
-        emissive={hovered ? "#4fd1c5" : "#000000"}
+        emissive={hovered ? color : "#000000"}
         emissiveIntensity={hovered ? 0.3 : 0}
       />
     </mesh>
@@ -125,16 +150,43 @@ const Scene = ({ onHover }: { onHover: (isHovered: boolean, data?: any) => void 
         color="#38bdf8"
       />
       
-      <ProjectedMesh onHover={onHover} />
+      <ProjectedMesh 
+        onHover={onHover} 
+        position={[0, 0, 0]} 
+        geometry="torusKnot"
+        color="#4fd1c5"
+        panelType="GRC Panel Type A"
+      />
+      <ProjectedMesh 
+        onHover={onHover} 
+        position={[-3.5, 1.5, -2]} 
+        geometry="sphere"
+        color="#f97316"
+        panelType="GRC Panel Type B - Premium"
+      />
+      <ProjectedMesh 
+        onHover={onHover} 
+        position={[3.5, -1, -1]} 
+        geometry="torus"
+        color="#8b5cf6"
+        panelType="GRC Panel Type C - Elite"
+      />
+      <ProjectedMesh 
+        onHover={onHover} 
+        position={[0, -2.5, 1]} 
+        geometry="box"
+        color="#10b981"
+        panelType="GRC Panel Type D - Standard"
+      />
       <BackgroundSpheres />
 
       <OrbitControls
         enablePan={false}
         enableZoom={true}
-        maxDistance={12}
-        minDistance={4}
+        maxDistance={15}
+        minDistance={5}
         autoRotate
-        autoRotateSpeed={1}
+        autoRotateSpeed={0.8}
       />
     </>
   );
