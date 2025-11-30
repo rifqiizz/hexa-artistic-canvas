@@ -12,16 +12,16 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
 
   useEffect(() => {
     // Load the Lottie animation
-    fetch("/Building_Build.lottie")
+    fetch("/Building_Build.json")
       .then((res) => res.json())
       .then((data) => setAnimationData(data))
       .catch((err) => console.error("Error loading animation:", err));
 
-    // Simulate loading completion
+    // Show preloader for longer to ensure visibility
     const timer = setTimeout(() => {
       setIsComplete(true);
-      setTimeout(onComplete, 800); // Delay for fade-out animation
-    }, 3000);
+      setTimeout(onComplete, 1000); // Delay for fade-out animation
+    }, 4500);
 
     return () => clearTimeout(timer);
   }, [onComplete]);
