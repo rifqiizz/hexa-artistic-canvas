@@ -14,6 +14,32 @@ import * as THREE from "three";
  * - Uses HDR env from /hdr/concrete_tunnel_02_4k.hdr (place file in public/hdr/)
  */
 
+function SafeEnvironment() {
+  const hdrPath = "/hdr/concrete_tunnel_02_4k.hdr";
+  const [exists, setExists] = React.useState<boolean | null>(null);
+
+  React.useEffect(() => {
+    fetch(hdrPath, { method: "HEAD" })
+      .then((res) => setExists(res.ok))
+      .catch(() => setExists(false));
+  }, []);
+
+  if (exists === null) return null;
+  if (!exists) return null; // tidak render jika file HDR tidak ada
+
+  return (
+    <Suspense fallback={null}>
+      <Environment
+        files={hdrPath}
+        background={false}
+        environmentIntensity={0.45}
+        blur={0.25}
+      />
+    </Suspense>
+  );
+}
+
+
 // create a noise canvas texture (grayscale) to use as map + bump
 function useNoiseTexture(size = 512, scale = 1.0) {
   return useMemo(() => {
@@ -141,14 +167,16 @@ export default function CubemapSceneConcrete() {
         />
 
         {/* Suspense-wrapped Environment (loads HDR) */}
-        <Suspense fallback={null}>
+        {/* <Suspense fallback={null}>
           <Environment
             files="/hdr/concrete_tunnel_02_4k.hdr"
             background={false}
             environmentIntensity={0.45}
             blur={0.25}
           />
-        </Suspense>
+        </Suspense> */}
+        
+        <SafeEnvironment />
 
         <ConcreteBackdrop />
         <ConcreteSphere noise={noiseTex} />

@@ -14,6 +14,28 @@ import { motion, AnimatePresence } from "framer-motion";
  * - preserves your hover HUD and geometry
  */
 
+function SafeEnvironment({
+  hdr = "/hdr/studio_small_09.hdr",
+  blur = 0.12,
+  background = false,
+}) {
+  const [exists, setExists] = React.useState<boolean | null>(null);
+
+  React.useEffect(() => {
+    fetch(hdr, { method: "HEAD" })
+      .then((res) => setExists(res.ok))
+      .catch(() => setExists(false));
+  }, [hdr]);
+
+  if (exists === null) return null;  // sedang cek
+  if (!exists) return null;          // tidak render Environment jika HDR hilang
+
+  return (
+    <Environment files={hdr} blur={blur} background={background} />
+  );
+}
+
+
 // ------------------------- ProjectedMesh -------------------------
 type ProjectedMeshProps = {
   onHover: (isHovered: boolean, data?: any) => void;
@@ -162,7 +184,10 @@ const Scene: React.FC<{ onHover: (h: boolean, d?: any) => void }> = ({
   return (
     <>
       {/* Environment: make sure /public/hdr/studio_small_09.hdr exists */}
-      <Environment files="/hdr/studio_small_09.hdr" blur={0.12} background={false} />
+      {/* <Environment files="/hdr/studio_small_09.hdr" blur={0.12} background={false} /> */}
+
+      <SafeEnvironment hdr="/hdr/studio_small_09.hdr" blur={0.12} background={false} />
+
 
       <ambientLight intensity={0.12} />
 
