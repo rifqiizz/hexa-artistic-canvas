@@ -27,6 +27,7 @@ const HoverFX: React.FC<{ children: HoverChildren; }> = ({ children }) => {
       ref={group}
       onPointerOver={(e) => { e.stopPropagation(); setHovered(true); }}
       onPointerOut={(e) => { e.stopPropagation(); setHovered(false); }}
+      onPointerMissed={(e)=>{}} // optional
     >
       {children(hovered, group)}
     </group>
@@ -183,34 +184,47 @@ const HoverPopup: React.FC<{
      Render popup at scene root using createPortal
   -------------------------------------------------- */
 
-  return createPortal(
-    <>
-      {/* POPUP PANEL */}
-      <group ref={popupRef}>
-        <mesh>
-          <planeGeometry args={[2.4, 1.05]} />
-          <primitive object={hologramMat} attach="material" />
-        </mesh>
+  if (!visible) return null; // hide popup & line when not hovered
 
-        <group position={[-1.1, 0.22, 0.01]}>
-          <Text fontSize={0.16} color="#000">{title}</Text>
-          <Text fontSize={0.12} color="#222" position={[0, -0.26, 0]}>{`Load: ${metrics.load}%`}</Text>
-          <Text fontSize={0.12} color="#222" position={[0, -0.48, 0]}>{`Temp: ${metrics.temp}°C`}</Text>
-          <Text fontSize={0.12} color="#222" position={[0, -0.70, 0]}>{`Integrity: ${metrics.status}%`}</Text>
-        </group>
-      </group>
-
-      {/* CONNECTOR LINE */}
-      <primitive object={lineObj} />
-
-      {/* POINTER */}
-      <mesh ref={tailRef}>
-        <coneGeometry args={[0.08, 0.22, 10]} />
-        <meshStandardMaterial color="#ffffff" />
+return createPortal(
+  <>
+    {/* Popup Box */}
+    <group ref={popupRef} raycast={() => null}>
+      <mesh>
+        <planeGeometry args={[2.4, 1.05]} />
+        <primitive object={hologramMat} attach="material" />
       </mesh>
-    </>,
-    scene
-  );
+
+      {/* TEXT INSIDE BOX (centered properly) */}
+      <group position={[-0.05, 0.28, 0.01]}>
+        <Text fontSize={0.18} color="#000000">{title}</Text>
+
+        <Text fontSize={0.12} color="#222222" position={[0, -0.30, 0]}>
+          {`Load: ${metrics.load}%`}
+        </Text>
+
+        <Text fontSize={0.12} color="#222222" position={[0, -0.52, 0]}>
+          {`Temp: ${metrics.temp}°C`}
+        </Text>
+
+        <Text fontSize={0.12} color="#222222" position={[0, -0.74, 0]}>
+          {`Integrity: ${metrics.status}%`}
+        </Text>
+      </group>
+    </group>
+
+    {/* Connector LINE — appears only on hover */}
+    <primitive object={lineObj} raycast={() => null} />
+
+    {/* Pointer / Arrow */}
+    <mesh ref={tailRef}>
+      <coneGeometry args={[0.08, 0.22, 10]} />
+      <meshStandardMaterial color="#ffffff" />
+    </mesh>
+  </>,
+  scene
+);
+
 };
 
 
@@ -250,8 +264,8 @@ const ReflectiveSphere: React.FC = () => {
 
             {/* Wireframe Overlay */}
             {hover && (
-              <mesh scale={[1.015, 1.015, 1.015]}> 
-                <sphereGeometry args={[1.51, 32, 32]} />
+              <mesh scale={[1.015, 1.015, 1.015]} raycast={() => null}> 
+                <sphereGeometry args={[1.51, 16, 16]} />
                 <primitive object={wireMaterial} attach="material" />
               </mesh>
             )}
@@ -317,7 +331,7 @@ const FloatingTorus: React.FC<{ position: [number, number, number] }> = ({ posit
         <>
           {/* Base Torus */}
           <mesh ref={meshRef} position={position}>
-            <torusGeometry args={[0.6, 0.2, 32, 64]} />
+            <torusGeometry args={[0.6, 0.2, 16, 32]} />
             <meshPhysicalMaterial
               metalness={1}
               roughness={hover ? 0.08 : 0.12}
@@ -331,16 +345,16 @@ const FloatingTorus: React.FC<{ position: [number, number, number] }> = ({ posit
 
             {/* Wireframe overlay bound to rotation */}
             {hover && (
-              <mesh scale={[1.015, 1.015, 1.015]}>
-                <torusGeometry args={[0.6, 0.2, 32, 64]} />
+              <mesh scale={[1.015, 1.015, 1.015]} raycast={() => null}>
+                <torusGeometry args={[0.6, 0.2, 16, 32]} />
                 <primitive object={wireMaterial} attach="material" />
               </mesh>
             )}
 
             {/* Scanline hologram overlay */}
             {hover && (
-              <mesh scale={[1.05, 1.05, 1.05]}>
-                <torusGeometry args={[0.6, 0.2, 32, 64]} />
+              <mesh scale={[1.05, 1.05, 1.05]} raycast={() => null}>
+                <torusGeometry args={[0.6, 0.2, 16, 32]} />
                 <primitive object={scanMaterial} attach="material" />
               </mesh>
             )}
