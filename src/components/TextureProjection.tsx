@@ -14,26 +14,8 @@ import { motion, AnimatePresence } from "framer-motion";
  * - preserves your hover HUD and geometry
  */
 
-function SafeEnvironment({
-  hdr = "/hdr/studio_small_09.hdr",
-  blur = 0.12,
-  background = false,
-}) {
-  const [exists, setExists] = React.useState<boolean | null>(null);
-
-  React.useEffect(() => {
-    fetch(hdr, { method: "HEAD" })
-      .then((res) => setExists(res.ok))
-      .catch(() => setExists(false));
-  }, [hdr]);
-
-  if (exists === null) return null;  // sedang cek
-  if (!exists) return null;          // tidak render Environment jika HDR hilang
-
-  return (
-    <Environment files={hdr} blur={blur} background={background} />
-  );
-}
+// Using CDN-hosted HDR for reliable loading
+const HDR_URL = "https://raw.githack.com/pmndrs/drei-assets/456060a26bbeb8fdf79326f224b6d99b8bcce736/hdri/potsdamer_platz_1k.hdr";
 
 
 // ------------------------- ProjectedMesh -------------------------
@@ -183,10 +165,8 @@ const Scene: React.FC<{ onHover: (h: boolean, d?: any) => void }> = ({
 }) => {
   return (
     <>
-      {/* Environment: make sure /public/hdr/studio_small_09.hdr exists */}
-      {/* <Environment files="/hdr/studio_small_09.hdr" blur={0.12} background={false} /> */}
-
-      <SafeEnvironment hdr="/hdr/studio_small_09.hdr" blur={0.12} background={false} />
+      {/* Using CDN HDR for realistic lighting */}
+      <Environment files={HDR_URL} blur={0.12} background={false} />
 
 
       <ambientLight intensity={0.12} />

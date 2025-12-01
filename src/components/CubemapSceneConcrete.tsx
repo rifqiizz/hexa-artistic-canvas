@@ -14,30 +14,8 @@ import * as THREE from "three";
  * - Uses HDR env from /hdr/concrete_tunnel_02_4k.hdr (place file in public/hdr/)
  */
 
-function SafeEnvironment() {
-  const hdrPath = "/hdr/concrete_tunnel_02_4k.hdr";
-  const [exists, setExists] = React.useState<boolean | null>(null);
-
-  React.useEffect(() => {
-    fetch(hdrPath, { method: "HEAD" })
-      .then((res) => setExists(res.ok))
-      .catch(() => setExists(false));
-  }, []);
-
-  if (exists === null) return null;
-  if (!exists) return null; // tidak render jika file HDR tidak ada
-
-  return (
-    <Suspense fallback={null}>
-      <Environment
-        files={hdrPath}
-        background={false}
-        environmentIntensity={0.45}
-        blur={0.25}
-      />
-    </Suspense>
-  );
-}
+// Using CDN-hosted HDR for reliable loading
+const HDR_URL = "https://raw.githack.com/pmndrs/drei-assets/456060a26bbeb8fdf79326f224b6d99b8bcce736/hdri/potsdamer_platz_1k.hdr";
 
 
 // create a noise canvas texture (grayscale) to use as map + bump
@@ -166,17 +144,15 @@ export default function CubemapSceneConcrete() {
           shadow-mapSize-height={1024}
         />
 
-        {/* Suspense-wrapped Environment (loads HDR) */}
-        {/* <Suspense fallback={null}>
+        {/* Using CDN HDR for realistic concrete lighting */}
+        <Suspense fallback={null}>
           <Environment
-            files="/hdr/concrete_tunnel_02_4k.hdr"
+            files={HDR_URL}
             background={false}
             environmentIntensity={0.45}
             blur={0.25}
           />
-        </Suspense> */}
-        
-        <SafeEnvironment />
+        </Suspense>
 
         <ConcreteBackdrop />
         <ConcreteSphere noise={noiseTex} />
