@@ -7,7 +7,8 @@ const pages = [
   "/top-product",// Page 3: Top Product
   "/about",      // Page 4: About
   "/project",    // Page 5: Project
-  "/trial",      // Page 6: Trial
+  "/gallery",    // Page 6: Gallery
+  "/trial",      // Page 7: Trial
 ];
 
 export const usePageNavigation = () => {
