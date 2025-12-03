@@ -6,6 +6,7 @@ import Product from "@/pages/Product";
 import About from "@/pages/About";
 import Project from "@/pages/Project";
 import Trial from "@/pages/Trial";
+import TopProduct from "@/pages/TopProduct";
 import NotFound from "@/pages/NotFound";
 
 const AnimatedRoutes = () => {
@@ -19,6 +20,7 @@ const AnimatedRoutes = () => {
         <Route path="/about" element={<PageTransition><About /></PageTransition>} />
         <Route path="/project" element={<PageTransition><Project /></PageTransition>} />
         <Route path="/trial" element={<PageTransition><Trial /></PageTransition>} />
+        <Route path="/top-product" element={<PageTransition><TopProduct /></PageTransition>} />
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>
     </AnimatePresence>
