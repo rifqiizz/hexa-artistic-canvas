@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import StaggeredMenu from "./StaggeredMenu";
+import PageNavigation from "./PageNavigation";
 
 interface LayoutProps {
   children: ReactNode;
@@ -22,6 +23,9 @@ const Layout = ({ children }: LayoutProps) => {
       <div className="fixed top-8 right-8 z-50">
         <StaggeredMenu />
       </div>
+
+      {/* Page Navigation Arrows */}
+      <PageNavigation />
 
       {/* Main Content */}
       <main className="w-full h-full">{children}</main>
