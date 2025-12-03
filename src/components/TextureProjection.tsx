@@ -282,6 +282,13 @@ const TextureProjection: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Info Overlay */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
+        <p className="text-foreground text-sm tracking-wider uppercase">
+          Hover over the object • Drag to rotate • Scroll to zoom
+        </p>
+      </div>
     </div>
   );
 };

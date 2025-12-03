@@ -40,9 +40,9 @@ const HoverFX: React.FC<{ children: HoverChildren; }> = ({ children }) => {
 /* --------------------------------------------------
    3D Popup (perfected)
    - Smart left/right placement
-   - World-space portal rendering
    - Smooth motion
    - True billboard
+   - World-space portal rendering
    - Perfect line + pointer alignment
    - Hologram shader
 -------------------------------------------------- */
@@ -397,9 +397,9 @@ const Scene: React.FC = () => {
           depthScale={1.2}
           minDepthThreshold={0.4}
           maxDepthThreshold={1.4}
-          color="#0a0a0a"
-          metalness={0.5}
-          mirror={0.5}
+          color="#0d0d0d"
+          metalness={0.2}
+          mirror={0.2}
         />
       </mesh>
 
@@ -425,6 +425,13 @@ const CubemapScene: React.FC = () => {
           <Scene />
         </Suspense>
       </Canvas>
+
+      {/* Info Overlay */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center z-40">
+        <p className="text-foreground text-sm tracking-wider uppercase">
+          Hover over the object • Drag to rotate • Scroll to zoom
+        </p>
+      </div>
     </div>
   );
 };

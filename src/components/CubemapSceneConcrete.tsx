@@ -61,7 +61,7 @@ const ConcreteMaterialProps = (colorHex: string, noiseTex: THREE.Texture) => ({
   bumpMap: noiseTex,
   bumpScale: 0.03,
   color: colorHex,
-  roughness: 0.68,
+  roughness: 0.8,
   metalness: 0.02,
   clearcoat: 0.04,
   clearcoatRoughness: 0.85,
@@ -154,13 +154,20 @@ export default function CubemapSceneConcrete() {
           />
         </Suspense>
 
-        <ConcreteBackdrop />
+        {/* <ConcreteBackdrop /> */}
         <ConcreteSphere noise={noiseTex} />
         <ConcreteTorus noise={noiseTex} position={[3, 1.2, -1.5]} color="#b9b6b2" />
         <ConcreteTorus noise={noiseTex} position={[-3, -1.2, -1]} color="#a9a7a4" />
 
         <OrbitControls enablePan={false} enableZoom={true} />
       </Canvas>
+
+      {/* Info Overlay */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
+        <p className="text-foreground text-sm tracking-wider uppercase">
+          Hover over the object • Drag to rotate • Scroll to zoom
+        </p>
+      </div>
     </div>
   );
 }
