@@ -15,7 +15,7 @@ const Trial = () => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.5 }}
-        className="absolute top-1/2 left-12 -translate-y-1/2 max-w-md z-10"
+        className="absolute top-32 left-12 -translate-y-1/2 sm:top-1/2 max-w-md z-10"
       >
         <h1 className="text-lg md:text-xl font-bold text-muted-foreground mb-4 hover:text-glow">
           GRC Artikon Concrete Material

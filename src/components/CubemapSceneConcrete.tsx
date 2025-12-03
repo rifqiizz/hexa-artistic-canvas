@@ -163,8 +163,8 @@ export default function CubemapSceneConcrete() {
       </Canvas>
 
       {/* Info Overlay */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
-        <p className="text-foreground text-sm tracking-wider uppercase">
+      <div className="absolute bottom-12 sm:bottom-8 left-8 right-8 sm:left-1/2 sm:-translate-x-1/2 text-left sm:text-center z-40">
+        <p className="text-foreground text-xs tracking-wider uppercase">
           Hover over the object • Drag to rotate • Scroll to zoom
         </p>
       </div>

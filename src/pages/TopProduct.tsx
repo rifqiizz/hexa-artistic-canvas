@@ -14,7 +14,7 @@ const TopProduct = () => {
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8, delay: 0.3 }}
-        className="absolute top-1/2 left-12 -translate-y-1/2 max-w-md z-10"
+        className="absolute sm:top-1/2 top-32 left-12 -translate-y-1/2 max-w-md z-10"
       >
         <h1 className="text-lg md:text-xl font-bold text-muted-foreground mb-4 hover:text-glow">
           Top Products

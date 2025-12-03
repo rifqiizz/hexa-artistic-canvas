@@ -14,8 +14,8 @@ const TypingText = () => {
   const [isComplete, setIsComplete] = useState(false);
 
   const textSections = [
-    "PRODUSEN GRC PANEL TERBAIK DI INDONESIA",
-    "Kami adalah produsen terkemuka panel GRC (Glass Reinforced Concrete) di Indonesia, menyediakan solusi arsitektur berkualitas premium untuk berbagai proyek konstruksi. Dengan pengalaman lebih dari 15 tahun, kami telah melayani ratusan proyek di seluruh Indonesia.\n\nProduk kami dibuat dengan teknologi terkini dan material berkualitas tinggi, memastikan daya tahan, estetika, dan efisiensi biaya yang optimal untuk setiap proyek arsitektur modern."
+    "The best GRC concrete panel manufacturer in Indonesia",
+    "GRC Artikon, a business line of PT. PJ ARTIKON, is a privately held company specializing in producing and supplying GRC/GFRC (Glassfiber Reinforced Concrete/cement) products. Our scope of work encompasses all stages, from planning (design), production, installation, and finishing."
   ];
 
   useEffect(() => {
@@ -44,13 +44,19 @@ const TypingText = () => {
   }, [currentSection]);
 
   return (
-    <div className="space-y-6">
+    <div className="py-12 sm:py-6">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        className="absolute sm:top-1/2 top-32 left-6 right-6 sm:left-12 text-center sm:text-left -translate-y-1/2 max-w-lg z-10"
+      >
       <AnimatePresence mode="wait">
         {currentSection === 0 && displayedText && (
           <motion.h1
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-3xl md:text-5xl font-bold text-foreground"
+            className="text-lg md:text-xl font-bold text-muted-foreground mb-4 hover:text-glow"
           >
             {displayedText}
             <span className="animate-pulse">|</span>
@@ -60,7 +66,7 @@ const TypingText = () => {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-base md:text-lg text-muted-foreground leading-relaxed whitespace-pre-line"
+            className="text-xs md:text-sm text-muted-foreground mb-6 leading-relaxed whitespace-pre-line"
           >
             {displayedText}
             <span className="animate-pulse">|</span>
@@ -70,17 +76,18 @@ const TypingText = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.1 }}
           >
-            <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-6">
+            <h1 className="text-lg md:text-xl font-bold text-muted-foreground mb-4 hover:text-glow">
               {textSections[0]}
             </h1>
-            <p className="text-base md:text-lg text-muted-foreground leading-relaxed whitespace-pre-line">
+            <p className="text-xs md:text-sm text-muted-foreground mb-6 leading-relaxed whitespace-pre-line">
               {textSections[1]}
             </p>
           </motion.div>
         )}
       </AnimatePresence>
+      </motion.div>
     </div>
   );
 };
@@ -177,6 +184,13 @@ const About = () => {
             <ImageSlider />
           </motion.div>
         </div>
+      </div>
+
+      {/* Info Overlay */}
+      <div className="fixed bottom-16 sm:bottom-8 left-8 right-8 sm:left-1/2 sm:-translate-x-1/2 text-left sm:text-center z-40">
+        <p className="text-foreground text-xs tracking-wider uppercase">
+          About Us • GRC Artikon
+        </p>
       </div>
     </div>
   );
