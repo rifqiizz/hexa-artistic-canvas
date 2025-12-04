@@ -135,7 +135,7 @@ const Gallery = () => {
       {/* Info Overlay */}
       <div className="fixed bottom-16 sm:bottom-8 left-8 right-8 sm:left-1/2 sm:-translate-x-1/2 text-left sm:text-center z-40">
         <p className="text-foreground text-xs tracking-wider uppercase">
-          Drag to rotate • Click to enlarge • GRC Artikon Gallery
+          Our Project Portfolio • GRC Artikon Gallery
         </p>
       </div>
     </div>

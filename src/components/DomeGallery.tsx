@@ -87,7 +87,7 @@ const DomeGallery = () => {
               borderRadius: 0,
               borderWidth: '2px',
               borderStyle: 'solid',
-              borderColor: activeIndex === index ? '#fff' : '#292929',
+              borderColor: activeIndex === index ? '#fff' : '#ccc',
               cursor: 'pointer',
               backgroundColor: '#18181b',
               boxShadow: activeIndex === index 
@@ -111,14 +111,14 @@ const DomeGallery = () => {
                 bottom: activeIndex === index ? '0' : '-40px',
                 height: '120px',
                 boxShadow: activeIndex === index 
-                  ? 'inset 0 -120px 120px -120px #000, inset 0 -120px 120px -80px #000' 
-                  : 'inset 0 -120px 0px -120px #000, inset 0 -120px 0px -80px #000'
+                  ? 'inset 0 -120px 120px -120px #ccc, inset 0 -120px 120px -80px #ccc' 
+                  : 'inset 0 -120px 0px -120px #ccc, inset 0 -120px 0px -80px #ccc'
               }}
             ></div>
             
             {/* Label with icon and info */}
             <div className="label absolute left-0 right-0 bottom-5 flex items-center justify-start h-12 z-2 pointer-events-none px-4 gap-3 w-full">
-              <div className="icon min-w-[44px] max-w-[44px] h-[44px] flex items-center justify-center rounded-full bg-[rgba(32,32,32,0.85)] backdrop-blur-[10px] shadow-[0_1px_4px_rgba(0,0,0,0.18)] border-2 border-[#444] flex-shrink-0 flex-grow-0 transition-all duration-200">
+              <div className="icon min-w-[44px] max-w-[44px] h-[44px] flex items-center justify-center rounded-full bg-[rgba(32,32,32,0.25)] backdrop-blur-[10px] shadow-[0_1px_4px_rgba(0,0,0,0.18)] border-2 border-[#fff] flex-shrink-0 flex-grow-0 transition-all duration-200">
                 {option.icon}
               </div>
               <div className="info text-white whitespace-pre relative">
