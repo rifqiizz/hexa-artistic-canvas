@@ -41,6 +41,8 @@ const DomeGallery = () => {
   const handleOptionClick = (index) => {
     if (index !== activeIndex) {
       setActiveIndex(index);
+    } else {
+      setActiveIndex(undefined);
     }
   };
 
@@ -66,7 +68,7 @@ const DomeGallery = () => {
       <div className="h-12"></div>
 
       {/* Options Container */}
-      <div className="options flex w-full max-w-[900px] min-w-[600px] h-[400px] mx-0 items-stretch overflow-hidden relative">
+      <div className="options flex w-full max-w-[900px] min-w-[800px] h-[300px] mx-0 items-stretch overflow-hidden relative">
         {options.map((option, index) => (
           <div
             key={index}
